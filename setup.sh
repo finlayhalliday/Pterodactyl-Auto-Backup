@@ -1,4 +1,12 @@
-echo "Do you want to setup AutoBackup For Pterodactyl? (Y/N)"
+#!/bin/bash
+if [ $EUID -ne 0 ]; then
+   echo "This script must be run as root" 
+   exit 1
+fi
+read -p "Do you want to setup AutoBackup For Pterodactyl? (Y/N)" continue
+if [ $continue == "N" ] || [ $continue == "n" ]; then
+	exit 1
+fi
 dpkg -s wget &> /dev/null
 
 if [ $? -eq 0 ]; then
@@ -7,40 +15,42 @@ else
     apt install -y wget
 fi
 
-if [! -d "~/scripts" ]; then
+if [ ! -d "~/scripts" ]; then
 	mkdir ~/scripts
 
 fi
-wget -p ~/scripts https://raw.githubusercontent.com/Kong-plays/Pterodactyl-Auto-Backup/master/autoBackup.sh
-chmod +x ~/scripts/autoBackup.sh
+
+
+if [ ! -f "~/scripts/autoBackup.sh" ]; then
+	cd ~/scripts
+	wget https://raw.githubusercontent.com/Kong-plays/Pterodactyl-Auto-Backup/master/autoBackup.sh
+	chmod +x ~/scripts/autoBackup.sh
+	cd ../
+fi
 while true; do
-	read continue
-	if [$continue -e "Y"]; then
+
+	if [ $continue == "Y" ] || [ $continue == "y" ]; then
 		ssh-keygen
 		echo ""
-		echo "Please enter your backup server's IP/Hostname"
-		read host
-		ssh-copy-id -i ~/.ssh/id_rsa.pub $host
+		read  -p "Please enter your backup server's IP/Hostname: " host
+		read  -p "Please enter your backup server's User: " user
+		ssh-copy-id -i ~/.ssh/id_rsa.pub $user@$host
 		echo ""
-		echo "Do you want to setup a Cron Job? (Y/N)"
 		while true; do
-			read continue
-
-			if [$continue -e "Y"]; then
-				crontab -l > cron
-				echo "00 00 * * * ~/scipts/autoBackup.sh" >> cron
-				crontab cron
-				rm cron
+			read -p "Do you want to setup a Cron Job? (Y/N)" continue
+			if [ $continue == "Y" ] || [ $continue == "y" ]; then
+				crontab -l | { cat; echo "0 0 * * * ~/scipts/autoBackup.sh"; } | crontab -
 				echo "Fully setup AutoBackup For Pterodactyl, exiting!"
 				exit 1
-			elif [$continue -e "N"]; then
+			elif [ $continue == "N" ] || [ $continue == "n" ]; then
 				exit 1
 			else
-				echo "Please Enter Y or N"
+				read -p "Please Enter Y or N" continue
 			fi
-	elif [$continue -e "N"]; then
+		done;
+	elif [ $continue == "N" ] || [ $continue == "n" ]; then
 		exit 1
 	else
-		echo "Please Enter Y or N"
+		read -p "Please Enter Y or N" continue
 	fi
 done;
