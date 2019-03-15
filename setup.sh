@@ -11,11 +11,10 @@ if [! -d "~/scripts" ]; then
 	mkdir ~/scripts
 
 fi
-wget -p ~/scripts 
+wget -p ~/scripts https://raw.githubusercontent.com/Kong-plays/Pterodactyl-Auto-Backup/master/autoBackup.sh
 chmod +x ~/scripts/autoBackup.sh
 while true; do
 	read continue
-
 	if [$continue -e "Y"]; then
 		ssh-keygen
 		echo ""
