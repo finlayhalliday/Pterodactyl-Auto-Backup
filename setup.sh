@@ -49,7 +49,7 @@ while true; do
 			if [ $continue == "Y" ] || [ $continue == "y" ]; then
 				crontab -l | { cat; echo "0 0 * * * ~/scipts/autoBackup.sh"; } | crontab -
 				echo "Fully setup AutoBackup For Pterodactyl, exiting!"
-				~/scripts/autoBackup.sh
+				exit 1
 			elif [ $continue == "N" ] || [ $continue == "n" ]; then
 				exit 1
 			else
