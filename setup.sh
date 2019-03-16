@@ -27,6 +27,14 @@ if [ ! -f "~/scripts/autoBackup.sh" ]; then
 	chmod +x ~/scripts/autoBackup.sh
 	cd ../
 fi
+cd ~/.ssh
+if [ -f "~/.ssh/config" ]; then
+	rm config
+fi
+wget https://raw.githubusercontent.com/Kong-plays/Pterodactyl-Auto-Backup/master/resources/config
+cd ../
+
+
 while true; do
 
 	if [ $continue == "Y" ] || [ $continue == "y" ]; then
@@ -41,7 +49,7 @@ while true; do
 			if [ $continue == "Y" ] || [ $continue == "y" ]; then
 				crontab -l | { cat; echo "0 0 * * * ~/scipts/autoBackup.sh"; } | crontab -
 				echo "Fully setup AutoBackup For Pterodactyl, exiting!"
-				exit 1
+				~/scripts/autoBackup.sh
 			elif [ $continue == "N" ] || [ $continue == "n" ]; then
 				exit 1
 			else
