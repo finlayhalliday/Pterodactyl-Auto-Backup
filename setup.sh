@@ -15,14 +15,14 @@ else
     apt install -y wget
 fi
 
-if [ ! -d "~/scripts" ]; then
-	mkdir ~/scripts
+if [ ! -d "/scripts" ]; then
+	mkdir /scripts
 
 fi
 
 
-if [ ! -f "~/scripts/autoBackup.sh" ]; then
-	cd ~/scripts
+if [ ! -f "/scripts/autoBackup.sh" ]; then
+	cd /scripts
 	wget https://raw.githubusercontent.com/Kong-plays/Pterodactyl-Auto-Backup/master/autoBackup.sh
 	chmod +x ~/scripts/autoBackup.sh
 	cd ../
@@ -47,7 +47,7 @@ while true; do
 		while true; do
 			read -p "Do you want to setup a Cron Job? (Y/N)" continue
 			if [ $continue == "Y" ] || [ $continue == "y" ]; then
-				crontab -l | { cat; echo "0 0 * * * ~/scipts/autoBackup.sh"; } | crontab -
+				crontab -l | { cat; echo "0 0 * * * /scipts/autoBackup.sh"; } | crontab -
 				echo "Fully setup AutoBackup For Pterodactyl, exiting!"
 				exit 1
 			elif [ $continue == "N" ] || [ $continue == "n" ]; then
